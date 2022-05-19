@@ -22,6 +22,10 @@ jobs:
             docker buildx create --name arm-builder
             docker buildx use arm-builder
             docker buildx inspect --bootstrap
+      - run:
+          name: Build image
+          command: |
+            docker buildx build --platform linux/arm64,linux/amd64 -t thebearingedge/circleci-multiarch .
 
 workflows:
   main:
