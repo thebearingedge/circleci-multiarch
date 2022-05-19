@@ -1,0 +1,29 @@
+version: 2.1
+
+jobs:
+  build-image:
+    machine:
+      image: ubuntu-2204:current
+    steps:
+      - checkout
+      - run:
+          name: Setup buildx and qemu
+          command: |
+            sudo apt update
+            sudo apt install -y qemu-user-static binfmt-support
+      - run:
+          name: Check versions
+          command: |
+            qemu-aarch64-static --version
+            update-binfmts --version
+      - run:
+          name: Create builder
+          command: |
+            docker buildx create --name arm-builder
+            docker buildx use arm-builder
+            docker buildx inspect --bootstrap
+
+workflows:
+  main:
+    jobs:
+      - build-image
